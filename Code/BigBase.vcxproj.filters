@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Common.hpp" />
+    <ClInclude Include="Logger.hpp" />
+    <ClInclude Include="Game.hpp" />
+    <ClInclude Include="Memory.hpp" />
+    <ClInclude Include="Hooking.hpp" />
+    <ClInclude Include="ScriptManager.hpp" />
+    <ClInclude Include="VMTHook.hpp" />
+    <ClInclude Include="Invoker.hpp" />
+    <ClInclude Include="Crossmap.hpp" />
+    <ClInclude Include="Natives.hpp" />
+    <ClInclude Include="Types.hpp" />
+    <ClInclude Include="Script.hpp" />
+    <ClInclude Include="Settings.hpp" />
+    <ClInclude Include="Util.hpp" />
+    <ClInclude Include="ScriptGlobal.hpp" />
+    <ClInclude Include="Timer.hpp" />
+    <ClInclude Include="ScriptCallback.hpp" />
+    <ClInclude Include="CustomText.hpp" />
+    <ClInclude Include="MainScript.hpp" />
+    <ClInclude Include="UI\TextBox.hpp" />
+    <ClInclude Include="UIManagement.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ParentSub.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Sub.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractOption.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RegularOption.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SubOption.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="BoolOption.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="HackFuncs.h" />
+    <ClInclude Include="Classes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Hooking.cpp" />
+    <ClCompile Include="ScriptManager.cpp" />
+    <ClCompile Include="ScriptCallback.cpp" />
+    <ClCompile Include="CustomText.cpp" />
+    <ClCompile Include="MainScript.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="UI">
+      <UniqueIdentifier>{7b377f07-cb42-477f-9e20-dd03ea5dc5ff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
