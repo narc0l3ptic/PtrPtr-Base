@@ -141,6 +141,8 @@ namespace Big
 		for (int i{}; i < playerlist.size(); i++)
 			player_list_sub->add_option(playerlist[i]);
 
+		g_UIManagement->m_ChildParentSubs[playerSub].m_ChildSubs[playerSelectedIndex].m_Name = PLAYER::GET_PLAYER_NAME(g_SelectedPlayer);
+
 		// Now we can actually make our player options.
 		// I will make a CEO kick to demonstrate.
 		static RegularOption CEOKickOption{ "CEO kick player", [=] {
