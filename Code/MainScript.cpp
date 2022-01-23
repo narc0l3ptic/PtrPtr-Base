@@ -134,8 +134,6 @@ namespace Big
 				playerlist.push_back(SubOption{ PLAYER::GET_PLAYER_NAME(i), playerSub, playerSelectedIndex, [=]
 				{
 					g_SelectedPlayer = i;
-					g_Logger->Info("Selected player: %i", g_SelectedPlayer);
-					g_Logger->Info("Selected player name: %s", PLAYER::GET_PLAYER_NAME(i));
 				}});
 			}
 		}
