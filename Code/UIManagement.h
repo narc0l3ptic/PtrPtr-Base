@@ -34,6 +34,15 @@ class UIManagement
 	Color text_colour_selected = Color{ 255, 255, 255, 255 };
 	Color background_colour = Color{ 255, 255, 255, 255 };
 	Color background_colour_selected = Color{ 0, 0, 0, 255 };
+	Color footer_colour = Color{ 40, 40, 40, 255 };
+
+	bool LeftParentPressed;
+	bool RightParentPressed;
+	bool UpPressed;
+	bool DownPressed;
+	bool EnterPressed;
+	bool BackPressed;
+	bool OpenClose;
 public:
 	int m_SelectedParentSub{ 0 };
 	std::vector<ParentSub> m_ChildParentSubs{};
@@ -49,15 +58,26 @@ public:
 	{
 	}
 
-	void check_and_handle_input()
+	void check_input()
 	{
-		bool LeftParentPressed = IsKeyPressed(VK_NUMPAD7);
-		bool RightParentPressed = IsKeyPressed(VK_NUMPAD9);
-		bool UpPressed = IsKeyPressed(VK_NUMPAD8);
-		bool DownPressed = IsKeyPressed(VK_NUMPAD2);
-		bool EnterPressed = IsKeyPressed(VK_NUMPAD5);
-		bool BackPressed = IsKeyPressed(VK_NUMPAD0);
+		LeftParentPressed = IsKeyPressed(VK_NUMPAD7);
+		RightParentPressed = IsKeyPressed(VK_NUMPAD9);
+		UpPressed = IsKeyPressed(VK_NUMPAD8);
+		DownPressed = IsKeyPressed(VK_NUMPAD2);
+		EnterPressed = IsKeyPressed(VK_NUMPAD5);
+		BackPressed = IsKeyPressed(VK_NUMPAD0);
+		OpenClose = IsKeyPressed(VK_ADD);
 
+		static Timer openCloseTimer(0ms);
+		openCloseTimer.SetDelay(std::chrono::milliseconds(250ms));
+		if (OpenClose && openCloseTimer.Update())
+		{
+			g_Opened = g_Opened ? false : true;
+		}
+	}
+
+	void handle_input()
+	{
 		Sub* current_sub = &m_ChildParentSubs[m_SelectedParentSub].m_ChildSubs[m_ChildParentSubs[m_SelectedParentSub].get_top_sub_stack_index()];
 		int* current_option_index = &m_ChildParentSubs[m_SelectedParentSub].m_ChildSubs[m_ChildParentSubs[m_SelectedParentSub].get_top_sub_stack_index()].m_CurrentOptionIndex;
 
@@ -129,25 +149,15 @@ public:
 		}
 	}
 
-	void check_and_handle_input_2()
-	{
-		bool OpenClosePressed = IsKeyPressed(0x50);
-		static Timer openCloseTimer(0ms);
-		openCloseTimer.SetDelay(std::chrono::milliseconds(100ms));
-		if (OpenClosePressed && openCloseTimer.Update())
-		{
-			g_Opened = g_Opened ? false : true;
-		}
-	}
-
 	void tick()
 	{
+		check_input();
+
 		if (g_Opened)
 		{
-			Sub* current_sub = &m_ChildParentSubs[m_SelectedParentSub].m_ChildSubs[m_ChildParentSubs[m_SelectedParentSub].get_top_sub_stack_index()];
+			handle_input();
 
-			check_and_handle_input();
-			check_and_handle_input_2();
+			Sub* current_sub = &m_ChildParentSubs[m_SelectedParentSub].m_ChildSubs[m_ChildParentSubs[m_SelectedParentSub].get_top_sub_stack_index()];
 
 			// Draw parent bar.
 			{
@@ -195,7 +205,7 @@ public:
 					{
 						if (i == current_sub->m_CurrentOptionIndex)
 						{
-							GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, y_pos + ((/*i*/j +1) * option_height) - (option_height - parent_bar_height), width, option_height, text_colour_selected.r, text_colour_selected.g, text_colour_selected.b, text_colour_selected.a, 1); // This is very confusing so dont bother reading it.
+							GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, y_pos + ((/*i*/j + 1) * option_height) - (option_height - parent_bar_height), width, option_height, text_colour_selected.r, text_colour_selected.g, text_colour_selected.b, text_colour_selected.a, 1); // This is very confusing so dont bother reading it.
 
 							if (current_sub->m_Options[i]->m_Type == OptionType::RegularOption)
 							{
@@ -324,6 +334,33 @@ public:
 					}
 				}
 			}
+
+			// Draw footer.
+			int maxopts = current_sub->m_Options.size() > max_options_displayed ? max_options_displayed : current_sub->m_Options.size();
+			int tempY = y_pos + parent_bar_height + (option_height * maxopts);/*((max_options_displayed + 1) * option_height) - (option_height - parent_bar_height) + option_height*/
+			GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, 
+				y_pos + ((maxopts + 1) * option_height) - (option_height - parent_bar_height),
+				width, 
+				parent_bar_height, 
+				footer_colour.r, 
+				footer_colour.g, 
+				footer_colour.b, 
+				footer_colour.a, 
+				1);
+
+			std::string toDisplay = current_sub->m_Name;
+			toDisplay += ": ";
+			toDisplay += std::to_string(current_sub->m_CurrentOptionIndex + 1);
+			toDisplay += "/";
+			toDisplay += std::to_string(current_sub->m_Options.size());
+
+			draw_left_text(toDisplay.c_str(),
+				x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
+				y_pos + parent_bar_height / 2 + (maxopts * option_height),
+				option_text_size,
+				Font::ChaletLondon,
+				background_colour,
+				false, false);
 		}
 	}
 

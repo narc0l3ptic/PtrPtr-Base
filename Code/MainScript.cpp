@@ -130,7 +130,6 @@ namespace Big
 		{
 			if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i))
 			{
-
 				playerlist.push_back(SubOption{ PLAYER::GET_PLAYER_NAME(i), playerSub, playerSelectedIndex, [=]
 				{
 					g_SelectedPlayer = i;
