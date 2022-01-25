@@ -8,8 +8,8 @@ class SubOption : public AbstractOption
 	int m_ChildSubIndex{};
 	std::function<void()> m_Function{};
 public:
-	SubOption(std::string name, int parentSubIndex, int childSubIndex, std::function<void()> tempFunction = []{})
-		: AbstractOption{ name, OptionType::SubOption }, m_ParentSubIndex{ parentSubIndex }, m_ChildSubIndex{ childSubIndex }, m_Function{ tempFunction } {}
+	SubOption(std::string name, int parentSubIndex, int childSubIndex, std::function<void()> tempFunction = []{}, std::string tempDescription = "")
+		: AbstractOption{ name, OptionType::SubOption, tempDescription }, m_ParentSubIndex{ parentSubIndex }, m_ChildSubIndex{ childSubIndex }, m_Function{ tempFunction } {}
 	~SubOption() {}
 
 	virtual void do_action() override

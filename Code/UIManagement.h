@@ -24,6 +24,12 @@ class UIManagement
 	float x_pos = 0.7f;
 	float left_text_padding = 0.005;
 	float right_sub_padding = 0.05;
+
+	// For the suggestion box.
+	float desc_text_size = 0.3;
+	float x_offset = 0.005;
+	float y_offset = 0.01;
+	float x_offset_text_fix = 0.002;
 	
 	float parent_sub_text_size = 0.45;
 	float option_text_size = 0.35;
@@ -44,6 +50,7 @@ class UIManagement
 	bool BackPressed;
 	bool OpenClose;
 public:
+	bool show_suggestions = true;
 	int m_SelectedParentSub{ 0 };
 	std::vector<ParentSub> m_ChildParentSubs{};
 
@@ -361,6 +368,20 @@ public:
 				Font::ChaletLondon,
 				background_colour,
 				false, false);
+
+			// Draw description.
+			if (current_sub->m_Options[current_sub->m_CurrentOptionIndex]->m_Description.size() > 0 && show_suggestions)
+			{
+				GRAPHICS::DRAW_RECT(0.5, 0.9, 0.2, 0.07, 0, 0, 0, 255, 1);
+				GRAPHICS::DRAW_RECT(0.5, 0.9, 0.2 - x_offset, 0.07 - y_offset, 102, 102, 102, 255, 1);
+				draw_left_text(current_sub->m_Options[current_sub->m_CurrentOptionIndex]->m_Description.c_str(),
+					0.5 - 0.1 /*Width of rect / 2*/ + x_offset + x_offset_text_fix,
+					0.9 - (0.07 / 2) + y_offset,
+					0.3,
+					Font::ChaletLondon,
+					Color{ 0, 0, 0, 255 },
+					false, false);
+			}
 		}
 	}
 

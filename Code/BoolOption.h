@@ -5,8 +5,8 @@ class BoolOption : public AbstractOption
 {
 	bool* m_BoolPtr;
 public:
-	BoolOption(std::string name, bool& boolToPoint)
-		: AbstractOption{ name, OptionType::BoolOption }, m_BoolPtr{ &boolToPoint } {}
+	BoolOption(std::string name, bool& boolToPoint, std::string tempDescription = "")
+		: AbstractOption{ name, OptionType::BoolOption, tempDescription }, m_BoolPtr{&boolToPoint} {}
 	~BoolOption() {}
 
 	virtual void do_action() override

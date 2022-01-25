@@ -36,10 +36,10 @@ namespace Big
 
 		ParentSub* parentSub = &g_UIManagement->m_ChildParentSubs[selfIndex];
 
-		static BoolOption godModeBooleanOption{ "God mode", godModeBoolean };
+		static BoolOption godModeBooleanOption{ "God mode", godModeBoolean, "Makes your player invincible. \nKEKW"};
 		parentSub->m_ChildSubs[selfHomeIndex].add_option(godModeBooleanOption);
 
-		static RegularOption suicideRegularOption{ "Easy way out", [] { ENTITY::SET_ENTITY_HEALTH(PLAYER::PLAYER_PED_ID(), 0); } };
+		static RegularOption suicideRegularOption{ "Easy way out", [] { ENTITY::SET_ENTITY_HEALTH(PLAYER::PLAYER_PED_ID(), 0); }, "Kills your player"};
 		parentSub->m_ChildSubs[selfHomeIndex].add_option(suicideRegularOption);
 
 		static BoolOption neverWantedBooleanOption{ "Never wanted", neverWantedBoolean };
@@ -57,6 +57,8 @@ namespace Big
 		static BoolOption superJumpBooleanOption{ "Super jump", superJumpBoolean };
 		parentSub->m_ChildSubs[selfHomeIndex].add_option(superJumpBooleanOption);
 
+
+
 		int selfWeaponsIndex = parentSub->add_child_sub("Weapons");
 
 		static SubOption selfWeaponsSubOption{ "Weapon options", selfIndex, selfWeaponsIndex };
@@ -73,6 +75,8 @@ namespace Big
 		static SubOption selfTeleportationSubOption{ "Teleportation", selfIndex, selfTeleportationIndex };
 		parentSub->m_ChildSubs[selfHomeIndex].add_option(selfTeleportationSubOption);
 
+
+
 		int selfMiscIndex = parentSub->add_child_sub("Misc");
 		
 		static SubOption selfMiscSubOption{ "Misc", selfIndex, selfMiscIndex };
@@ -80,6 +84,9 @@ namespace Big
 
 		static BoolOption casinoSwapBooleanOption{ "Casino model swap", lesterCasino };
 		parentSub->m_ChildSubs[selfMiscIndex].add_option(casinoSwapBooleanOption);
+
+		static BoolOption showSuggestionsBooleanOption{ "Show suggestions", g_UIManagement->show_suggestions };
+		parentSub->m_ChildSubs[selfMiscIndex].add_option(showSuggestionsBooleanOption);
 	}
 
 	void SpawnerSub()
@@ -148,7 +155,7 @@ namespace Big
 		static RegularOption CEOKickOption{ "CEO kick player", [=] {
 			uint64_t ceo_kick_1[4]{ 248967238, PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(g_SelectedPlayer), 1, 5 };
 			g_GameFunctions->m_TriggerScriptEvent(1, ceo_kick_1, 4, 1 << g_SelectedPlayer);
-		}};
+		}, "Kick player from their CEO/MC/VIP"};
 
 		// We only need to show one SubOption: the playerlist sub.
 		// We only want to add it once, otherwise the menu crashes.
