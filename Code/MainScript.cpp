@@ -70,11 +70,15 @@ namespace Big
 		static BoolOption selfWeaponsInfiniteAmmoBooleanOption{ "Infinite ammo", infiniteAmmoBoolean };
 		parentSub->m_ChildSubs[selfWeaponsIndex].add_option(selfWeaponsInfiniteAmmoBooleanOption);
 
+
 		int selfTeleportationIndex = parentSub->add_child_sub("Teleportation");
 
 		static SubOption selfTeleportationSubOption{ "Teleportation", selfIndex, selfTeleportationIndex };
 		parentSub->m_ChildSubs[selfHomeIndex].add_option(selfTeleportationSubOption);
 
+		static bool test_bool = false;
+		static BoolOption selfTeleportationBooleanOption{ "Test bool", test_bool, "a test boolean" };
+		parentSub->m_ChildSubs[selfTeleportationIndex].add_option(selfTeleportationBooleanOption);
 
 
 		int selfMiscIndex = parentSub->add_child_sub("Misc");

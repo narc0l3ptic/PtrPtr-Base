@@ -19,6 +19,8 @@ class UIManagement
 {
 	float width = 0.17;
 	float parent_bar_height = 0.03;
+	float footer_bar_height = 0.03;
+	float footer_distance = 0.0;
 	float option_height = 0.03;
 	float y_pos = 0.1f;
 	float x_pos = 0.7f;
@@ -27,20 +29,29 @@ class UIManagement
 
 	// For the suggestion box.
 	float desc_text_size = 0.3;
-	float x_offset = 0.005;
-	float y_offset = 0.01;
-	float x_offset_text_fix = 0.002;
-	
+	float desc_box_height = 0.07;
+	float desc_box_width = 0.2;
+	float y_desc = 0.9;
+	float x_desc = 0.5;
+	float desc_left_text_padding = 0.002;
+
 	float parent_sub_text_size = 0.45;
 	float option_text_size = 0.35;
 
 	int max_options_displayed = 12;
 
-	Color text_colour = Color{ 0, 0, 0, 255 };
-	Color text_colour_selected = Color{ 255, 255, 255, 255 };
-	Color background_colour = Color{ 255, 255, 255, 255 };
-	Color background_colour_selected = Color{ 0, 0, 0, 255 };
-	Color footer_colour = Color{ 40, 40, 40, 255 };
+	Color text_color = Color{ 255, 255, 255, 255 };
+	Color text_color_selected = Color{ 0, 0, 0, 255 };
+
+	Color background_color = Color{ 0, 0, 0, 255 };
+	Color background_color_selected = Color{ 255, 255, 255, 255 };
+
+	Color footer_text_color = Color{ 255, 255, 255, 255 };
+	Color footer_color = Color{ 102, 102, 102, 255 };
+
+	Color desc_text_color = Color{ 0, 0, 0, 255 };
+	Color desc_box_outline_color = Color{ 0, 0, 0, 255 };
+	Color desc_box_color = Color{ 102, 102, 102, 255 };
 
 	bool LeftParentPressed;
 	bool RightParentPressed;
@@ -173,24 +184,24 @@ public:
 				{
 					if (i == m_SelectedParentSub) // If we are currently iterating on the selected parent sub do the contained.
 					{
-						GRAPHICS::DRAW_RECT(x_pos + (i * (width / m_ChildParentSubs.size())), y_pos, (width / m_ChildParentSubs.size()), parent_bar_height, text_colour_selected.r, text_colour_selected.g, text_colour_selected.b, text_colour_selected.a, 1);
+						GRAPHICS::DRAW_RECT(x_pos + (i * (width / m_ChildParentSubs.size())), y_pos, (width / m_ChildParentSubs.size()), parent_bar_height, background_color_selected.r, background_color_selected.g, background_color_selected.b, background_color_selected.a, 1);
 						draw_centered_text(m_ChildParentSubs[i].m_Name.c_str(), // I split this function call up along the lines because it was too long :(
 							x_pos + (i * (width / m_ChildParentSubs.size())),
 							y_pos - (get_text_height(Font::ChaletLondon, parent_sub_text_size) / 1.5f),
 							parent_sub_text_size,
 							Font::ChaletLondon,
-							background_colour_selected,
+							text_color_selected,
 							false, false);
 					}
 					else
 					{
-						GRAPHICS::DRAW_RECT(x_pos + (i * (width / m_ChildParentSubs.size())), y_pos, (width / m_ChildParentSubs.size()), parent_bar_height, text_colour.r, text_colour.g, text_colour.b, text_colour.a, 1);
+						GRAPHICS::DRAW_RECT(x_pos + (i * (width / m_ChildParentSubs.size())), y_pos, (width / m_ChildParentSubs.size()), parent_bar_height, background_color.r, background_color.g, background_color.b, background_color.a, 1);
 						draw_centered_text(m_ChildParentSubs[i].m_Name.c_str(), // I split this function call up along the lines because it was too long :(
 							x_pos + (i * (width / m_ChildParentSubs.size())),
 							y_pos - (get_text_height(Font::ChaletLondon, parent_sub_text_size) / 1.5f),
 							parent_sub_text_size,
 							Font::ChaletLondon,
-							background_colour,
+							text_color,
 							false, false);
 					}
 				}
@@ -208,132 +219,137 @@ public:
 						end = current_sub->m_CurrentOptionIndex + 1;
 					}
 
-					for (int i = start, j = 0; i < /*current_sub->m_Options.size()*/end; ++i, ++j)
+					for (int i = start, j = 0; i < /*current_sub->m_Options.size()*/ end; ++i, ++j)
 					{
+
+						float rectY = y_pos + ((j + 1) * option_height) - (option_height / 2) + (parent_bar_height / 2);
+
+						float textY = rectY - ((option_text_size / 20.f) * 0.75f);
+
 						if (i == current_sub->m_CurrentOptionIndex)
 						{
-							GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, y_pos + ((/*i*/j + 1) * option_height) - (option_height - parent_bar_height), width, option_height, text_colour_selected.r, text_colour_selected.g, text_colour_selected.b, text_colour_selected.a, 1); // This is very confusing so dont bother reading it.
+							GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, rectY, width, option_height, background_color_selected.r, background_color_selected.g, background_color_selected.b, background_color_selected.a, 1); // This is very confusing so dont bother reading it.
 
 							if (current_sub->m_Options[i]->m_Type == OptionType::RegularOption)
 							{
 								draw_left_text(current_sub->m_Options[i]->m_Name.c_str(),
 									x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour_selected,
+									text_color_selected,
 									false, false);
 							}
 							if (current_sub->m_Options[i]->m_Type == OptionType::SubOption)
 							{
 								draw_left_text(current_sub->m_Options[i]->m_Name.c_str(),
 									x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour_selected,
+									text_color_selected,
 									false, false);
 
 								draw_right_text(">",
 									x_pos + width - right_sub_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour_selected,
+									text_color_selected,
 									false, false);
 							}
 							if (current_sub->m_Options[i]->m_Type == OptionType::BoolOption)
 							{
 								draw_left_text(current_sub->m_Options[i]->m_Name.c_str(),
 									x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour_selected,
+									text_color_selected,
 									false, false);
 
-								if (current_sub->m_Options[i]->get_value() == true)
+								if (current_sub->m_Options[i]->get_value())
 								{
 									draw_right_text("ON",
 										x_pos + width - right_sub_padding,
-										y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+										textY,
 										option_text_size,
 										Font::ChaletLondon,
-										Color{ 0, 255, 0, 255 },
+										Color{ 0, 255, 0, text_color_selected.a },
 										false, false);
 								}
 								else
 								{
 									draw_right_text("OFF",
 										x_pos + width - right_sub_padding,
-										y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+										textY,
 										option_text_size,
 										Font::ChaletLondon,
-										Color{ 255, 0, 0, 255 },
+										Color{ 255, 0, 0, text_color_selected.a },
 										false, false);
 								}
 							}
 						}
 						else
 						{
-							GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, y_pos + ((j + 1) * option_height) - (option_height - parent_bar_height), width, option_height, text_colour.r, text_colour.g, text_colour.b, text_colour.a, 1); // This is very confusing so dont bother reading it.
+							GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, rectY, width, option_height, background_color.r, background_color.g, background_color.b, background_color.a, 1); // This is very confusing so dont bother reading it.
 
 							if (current_sub->m_Options[i]->m_Type == OptionType::RegularOption)
 							{
 								draw_left_text(current_sub->m_Options[i]->m_Name.c_str(),
 									x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour,
+									text_color,
 									false, false);
 							}
 							if (current_sub->m_Options[i]->m_Type == OptionType::SubOption)
 							{
 								draw_left_text(current_sub->m_Options[i]->m_Name.c_str(),
 									x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour,
+									text_color,
 									false, false);
 
 								draw_right_text(">",
 									x_pos + width - right_sub_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour,
+									text_color,
 									false, false);
 							}
 							if (current_sub->m_Options[i]->m_Type == OptionType::BoolOption)
 							{
 								draw_left_text(current_sub->m_Options[i]->m_Name.c_str(),
 									x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
-									y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+									textY,
 									option_text_size,
 									Font::ChaletLondon,
-									background_colour,
+									text_color,
 									false, false);
 
 								if (current_sub->m_Options[i]->get_value() == true)
 								{
 									draw_right_text("ON",
 										x_pos + width - right_sub_padding,
-										y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+										textY,
 										option_text_size,
 										Font::ChaletLondon,
-										Color{ 0, 255, 0, 255 },
+										Color{ 0, 255, 0, text_color.a },
 										false, false);
 								}
 								else
 								{
 									draw_right_text("OFF",
 										x_pos + width - right_sub_padding,
-										y_pos + parent_bar_height / 2 + (/*i*/j * option_height),
+										textY,
 										option_text_size,
 										Font::ChaletLondon,
-										Color{ 255, 0, 0, 255 },
+										Color{ 255, 0, 0, text_color_selected.a },
 										false, false);
 								}
 							}
@@ -344,15 +360,16 @@ public:
 
 			// Draw footer.
 			int maxopts = current_sub->m_Options.size() > max_options_displayed ? max_options_displayed : current_sub->m_Options.size();
-			int tempY = y_pos + parent_bar_height + (option_height * maxopts);/*((max_options_displayed + 1) * option_height) - (option_height - parent_bar_height) + option_height*/
-			GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2, 
-				y_pos + ((maxopts + 1) * option_height) - (option_height - parent_bar_height),
-				width, 
-				parent_bar_height, 
-				footer_colour.r, 
-				footer_colour.g, 
-				footer_colour.b, 
-				footer_colour.a, 
+			float footerRectY = y_pos + ((maxopts + 1) * option_height) - (option_height / 2) + (parent_bar_height / 2) + footer_distance;
+			float footerTextY = footerRectY - ((option_text_size / 20.f) * 0.75f);
+			GRAPHICS::DRAW_RECT((x_pos - (width / m_ChildParentSubs.size()) / 2) + width / 2,
+				footerRectY,
+				width,
+				footer_bar_height,
+				footer_color.r,
+				footer_color.g,
+				footer_color.b,
+				footer_color.a,
 				1);
 
 			std::string toDisplay = current_sub->m_Name;
@@ -363,54 +380,57 @@ public:
 
 			draw_left_text(toDisplay.c_str(),
 				x_pos - (width / m_ChildParentSubs.size()) / 2 + left_text_padding,
-				y_pos + parent_bar_height / 2 + (maxopts * option_height),
+				footerTextY,
 				option_text_size,
 				Font::ChaletLondon,
-				background_colour,
+				footer_text_color,
 				false, false);
 
 			// Draw description.
 			if (current_sub->m_Options[current_sub->m_CurrentOptionIndex]->m_Description.size() > 0 && show_suggestions)
 			{
-				GRAPHICS::DRAW_RECT(0.5, 0.9, 0.2, 0.07, 0, 0, 0, 255, 1);
-				GRAPHICS::DRAW_RECT(0.5, 0.9, 0.2 - x_offset, 0.07 - y_offset, 102, 102, 102, 255, 1);
+				float x_offset = 0.005;
+				float y_offset = 0.01;
+
+				GRAPHICS::DRAW_RECT(x_desc, y_desc, desc_box_width, desc_box_height, desc_box_outline_color.r, desc_box_outline_color.g, desc_box_outline_color.b, desc_box_outline_color.a, 1);
+				GRAPHICS::DRAW_RECT(x_desc, y_desc, desc_box_width - x_offset, desc_box_height - y_offset, desc_box_color.r, desc_box_color.g, desc_box_color.b, desc_box_color.a, 1);
 				draw_left_text(current_sub->m_Options[current_sub->m_CurrentOptionIndex]->m_Description.c_str(),
-					0.5 - 0.1 /*Width of rect / 2*/ + x_offset + x_offset_text_fix,
-					0.9 - (0.07 / 2) + y_offset,
-					0.3,
+					x_desc + (x_offset)-(desc_box_width / 2) + desc_left_text_padding,
+					y_desc - y_offset - ((desc_text_size / 20.f) * 0.75f),
+					desc_text_size,
 					Font::ChaletLondon,
-					Color{ 0, 0, 0, 255 },
+					desc_text_color,
 					false, false);
 			}
 		}
 	}
 
-	void draw_left_text(const char* text, float x, float y, float size, Font font, Color colour, bool outline, bool shadow)
+	void draw_left_text(const char* text, float x, float y, float size, Font font, Color color, bool outline, bool shadow)
 	{
 		HUD::SET_TEXT_SCALE(size, size);
 		HUD::SET_TEXT_FONT(static_cast<int>(font));
-		HUD::SET_TEXT_COLOUR(colour.r, colour.g, colour.b, colour.a);
+		HUD::SET_TEXT_COLOUR(color.r, color.g, color.b, color.a);
 		if (outline)
 			HUD::SET_TEXT_OUTLINE();
 		if (shadow)
 			HUD::SET_TEXT_DROP_SHADOW();
-		
+
 		HUD::BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING");
 		HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text);
 		HUD::END_TEXT_COMMAND_DISPLAY_TEXT(x, y, 0);
 	}
 
-	void draw_right_text(const char* text, float x, float y, float size, Font font, Color colour, bool outline, bool shadow)
+	void draw_right_text(const char* text, float x, float y, float size, Font font, Color color, bool outline, bool shadow)
 	{
 		HUD::SET_TEXT_WRAP(0.f, x);
 		HUD::SET_TEXT_RIGHT_JUSTIFY(true);
-		draw_left_text(text, x, y, size, font, colour, outline, shadow);
+		draw_left_text(text, x, y, size, font, color, outline, shadow);
 	}
 
-	void draw_centered_text(const char* text, float x, float y, float size, Font font, Color colour, bool outline, bool shadow)
+	void draw_centered_text(const char* text, float x, float y, float size, Font font, Color color, bool outline, bool shadow)
 	{
 		HUD::SET_TEXT_CENTRE(true);
-		draw_left_text(text, x, y, size, font, colour, outline, shadow);
+		draw_left_text(text, x, y, size, font, color, outline, shadow);
 	}
 
 	float get_text_height(Font font, float size)
