@@ -62,6 +62,8 @@ class UIManagement
 	bool OpenClose;
 public:
 	bool show_suggestions = true;
+	bool play_sounds = true;
+
 	int m_SelectedParentSub{ 0 };
 	std::vector<ParentSub> m_ChildParentSubs{};
 
@@ -91,6 +93,8 @@ public:
 		if (OpenClose && openCloseTimer.Update())
 		{
 			g_Opened = g_Opened ? false : true;
+			if (play_sounds)
+				AUDIO::PLAY_SOUND_FRONTEND(-1, g_Opened ? "SELECT" : "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
 		}
 	}
 
@@ -114,6 +118,9 @@ public:
 			{
 				m_SelectedParentSub--;
 			}
+
+			if (play_sounds)
+				AUDIO::PLAY_SOUND_FRONTEND(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
 		}
 		if (RightParentPressed && parentTimer.Update())
 		{
@@ -125,6 +132,9 @@ public:
 			{
 				m_SelectedParentSub++;
 			}
+
+			if (play_sounds)
+				AUDIO::PLAY_SOUND_FRONTEND(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
 		}
 
 		static Timer optionTimer(0ms);
@@ -139,6 +149,9 @@ public:
 			{
 				(*current_option_index)--;
 			}
+
+			if (play_sounds)
+				AUDIO::PLAY_SOUND_FRONTEND(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
 		}
 		if (DownPressed && optionTimer.Update())
 		{
@@ -150,12 +163,17 @@ public:
 			{
 				(*current_option_index)++;
 			}
+
+			if (play_sounds)
+				AUDIO::PLAY_SOUND_FRONTEND(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
 		}
 		if (EnterPressed && parentTimer.Update())
 		{
 			if (m_ChildParentSubs[m_SelectedParentSub].m_ChildSubs[m_ChildParentSubs[m_SelectedParentSub].get_top_sub_stack_index()].m_Options.size() > 0)
 			{
 				current_sub->m_Options[current_sub->m_CurrentOptionIndex]->do_action();
+				if (play_sounds)
+					AUDIO::PLAY_SOUND_FRONTEND(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
 			}
 		}
 		if (BackPressed && parentTimer.Update())
@@ -163,6 +181,8 @@ public:
 			if (m_ChildParentSubs[m_SelectedParentSub].m_SubStackIndex.size() > 1)
 			{
 				m_ChildParentSubs[m_SelectedParentSub].m_SubStackIndex.pop_back();
+				if (play_sounds)
+					AUDIO::PLAY_SOUND_FRONTEND(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", false);
 			}
 		}
 	}
